@@ -46,4 +46,14 @@ public class PasswordHelper {
 
         user.setPassword(newPassword);
     }
+    
+	public static void main(String[] args) throws Exception, Error {
+		String newPassword = new SimpleHash(
+                "md5",
+                "123456",
+                ByteSource.Util.bytes("1c513779885aab91195cf4bcf0580b05"),
+                2).toHex();
+
+        System.out.println(newPassword);
+	}
 }

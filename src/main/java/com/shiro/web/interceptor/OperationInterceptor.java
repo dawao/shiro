@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.spring.remoting.SecureRemoteInvocationExecutor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -81,7 +82,11 @@ public class OperationInterceptor {
 			} else {
 				_operatorLog.setStory(method.getAnnotation(Operator.class).story());
 			}
-			_operatorLog.setUserId(userService.findByUsername((String) SecurityUtils.getSubject().getPrincipal()).getId());
+			String username = (String)SecurityUtils.getSubject().getPrincipal();
+			if(null == username)//初始化时重启任务没有用户名,用admin
+				_operatorLog.setUserId(1L);
+			else
+				_operatorLog.setUserId(userService.findByUsername( username).getId());
 			operationLogService.insert(_operatorLog);
 		}
 		return object;

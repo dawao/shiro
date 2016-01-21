@@ -31,7 +31,7 @@ public class BeanUtil {
 	public boolean parameterTypesExists(Method method){
 		try {
 			Class<?>[] cc =  method.getParameterTypes();
-			if(0==cc.length){
+			if(1==cc.length){
 				return true;
 			}
 			return false;

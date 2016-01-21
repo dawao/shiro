@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,7 @@ import com.shiro.web.exception.ScheduleException;
 
 @Controller
 @RequestMapping("/job")
-public class ScheduleJobController {
+public class ScheduleJobController implements InitializingBean {
 
 	@Autowired
 	private ScheduleJobService scheduleJobService;
@@ -47,7 +48,7 @@ public class ScheduleJobController {
 	/**
 	 * 添加/修改定时器
 	 * @param scheduleJob
-	 * @param model
+	 * @param redirectAttributes
 	 * @param request
 	 * @return
 	 */
@@ -158,7 +159,7 @@ public class ScheduleJobController {
 	/**
 	 * 加载添加/编辑定时器页面
 	 * @param model
-	 * @param req
+	 * @param request
 	 * @return
 	 */
 	@RequiresPermissions({"maintain:job:create","maintain:job:update"})
@@ -177,7 +178,7 @@ public class ScheduleJobController {
 	/**
 	 * 加载添加/编辑定时器分组页面
 	 * @param model
-	 * @param req
+	 * @param request
 	 * @return
 	 */
 	@RequiresPermissions({"maintain:job:create","maintain:job:update"})
@@ -270,5 +271,19 @@ public class ScheduleJobController {
 		scheduleJobGroup.setStatus(status);
 		scheduleJobGroupService.update(scheduleJobGroup);
 		return "redirect:/job/2";
+	}
+
+	/**
+	 * 重启定时任务
+	 * @throws Exception
+     */
+	public void afterPropertiesSet() throws Exception {
+		List<ScheduleJob> jobs = scheduleJobService.findAll();
+		for (ScheduleJob job : jobs ) {
+			if(job.getStatus() == 0) {
+				System.out.println("重启定时任务:"+job.getScheduleJobName());
+				scheduleJobService.thaw(job);
+			}
+		}
 	}
 }

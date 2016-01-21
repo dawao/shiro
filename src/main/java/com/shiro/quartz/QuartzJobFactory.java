@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.shiro.util.BeanUtil;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -29,7 +30,7 @@ public class QuartzJobFactory implements Job{
 	
 	private static final Logger console = LoggerFactory.getLogger(QuartzJobFactory.class);
 	private static Map<String, Class<?>> maps = new HashMap<String, Class<?>>();
-	
+	private BeanUtil beanUtil = new BeanUtil();
 	
 	@Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -48,8 +49,10 @@ public class QuartzJobFactory implements Job{
 				maps.put(className, exec);
 			}
 			try {
-				Method method = exec.getMethod(scheduleJob.getScheduleJobMethod());
-				method.invoke(exec.newInstance());
+				//Method method = exec.getMethod(scheduleJob.getScheduleJobMethod());
+				Method method = beanUtil.methodExists(exec,scheduleJob.getScheduleJobMethod());
+				if(null == method) throw new NoSuchMethodException();
+				method.invoke(exec.newInstance(),"url/suffix");
 			} catch (NoSuchMethodException e1) {
 				e1.printStackTrace();
 			} catch (SecurityException e1) {

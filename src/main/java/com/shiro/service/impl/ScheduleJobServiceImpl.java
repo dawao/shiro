@@ -148,7 +148,7 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
 			Method method = null;
 			if(null!=(method=beanUtil.methodExists(class1,scheduleJob.getScheduleJobMethod()))){
 				if(!beanUtil.parameterTypesExists(method)){
-					throw new ScheduleException("执行方法中不能存有任何参数.");
+					throw new ScheduleException("执行方法中只能有1个参数.");
 				}
 			}else{
 				throw new ScheduleException("执行方法不存在此调用类中.");

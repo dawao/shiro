@@ -34,7 +34,7 @@
         $(document).ready(function () {
             $('body').layout({ applyDemoStyles: true,north__resizable:false,west__closable:false,west__resizable:false,initClosed:false});
             $('body').css('margin','auto');
-            $('body').css('width','70%');
+            $('body').css('width','96%');
             $('#iframe').css('left','auto');
             $('#iframe').css('width','1072px');
         });
